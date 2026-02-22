@@ -1,13 +1,15 @@
-var builder = DistributedApplication.CreateBuilder(args);
+using Projects;
 
-var cache = builder.AddRedis("residential-building-cache")
+IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
+
+IResourceBuilder<RedisResource> cache = builder.AddRedis("residential-building-cache")
     .WithRedisInsight(containerName: "residential-building-insight");
 
-var generator = builder.AddProject<Projects.ResidentialBuilding_Generator>("generator")
+IResourceBuilder<ProjectResource> generator = builder.AddProject<ResidentialBuilding_Generator>("generator")
     .WithReference(cache, "residential-building-cache")
     .WaitFor(cache);
 
-var client = builder.AddProject<Projects.Client_Wasm>("client")
+IResourceBuilder<ProjectResource> client = builder.AddProject<Client_Wasm>("client")
     .WithReference(generator)
     .WaitFor(generator);
 

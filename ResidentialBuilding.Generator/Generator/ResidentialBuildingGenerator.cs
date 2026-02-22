@@ -4,18 +4,10 @@ using Generator.DTO;
 namespace Generator.Generator;
 
 /// <summary>
-/// Генератор объектов жилого строительства на основе Bogus
+///     Генератор объектов жилого строительства на основе Bogus.
 /// </summary>
 public class ResidentialBuildingGenerator(ILogger<ResidentialBuildingGenerator> logger)
 {
-    private static readonly string[] _propertyTypes =
-    [
-        "Квартира",
-        "ИЖС",
-        "Апартаменты",
-        "Офис"
-    ];
-
     private const int MinBuildYear = 1900;
 
     private const double MinTotalArea = 10.0;
@@ -34,16 +26,24 @@ public class ResidentialBuildingGenerator(ILogger<ResidentialBuildingGenerator> 
 
     private const double MaxPricePerM2 = 200;
 
+    private static readonly string[] _propertyTypes =
+    [
+        "Квартира",
+        "ИЖС",
+        "Апартаменты",
+        "Офис"
+    ];
+
     /// <summary>
-    /// Генерирует объект жилого строительства для заданного идентификатора
+    ///     Генерирует объект жилого строительства для заданного идентификатора.
     /// </summary>
-    /// <param name="id">Идентификатор объекта жилого строительства</param>
-    /// <returns>Сгенерированный объект жилого строительства</returns>
+    /// <param name="id">Идентификатор объекта жилого строительства.</param>
+    /// <returns>Сгенерированный объект жилого строительства.</returns>
     public ResidentialBuildingDto Generate(int id)
     {
         logger.LogInformation("Generating Residential Building for Id={id}", id);
-        
-        var faker = new Faker<ResidentialBuildingDto>("ru")
+
+        Faker<ResidentialBuildingDto>? faker = new Faker<ResidentialBuildingDto>("ru")
             .RuleFor(x => x.Id, _ => id)
             .RuleFor(x => x.Address, f => f.Address.FullAddress())
             .RuleFor(x => x.PropertyType, f => f.PickRandom(_propertyTypes))
@@ -77,16 +77,16 @@ public class ResidentialBuildingGenerator(ILogger<ResidentialBuildingGenerator> 
                 return (decimal)Math.Round(price, 2);
             });
 
-        var generatedObject = faker.Generate();
-        
+        ResidentialBuildingDto? generatedObject = faker.Generate();
+
         logger.LogInformation(
             "Residential building generated: Id={Id}, Address='{Address}', PropertyType='{PropertyType}', " +
             "BuildYear={BuildYear}, TotalArea={TotalArea}, LivingArea={LivingArea}, Floor={Floor}, " +
-            "TotalFloors={TotalFloors}, CadastralNumber='{CadastralNumber}', CadastralValue={CadastralValue}", 
-            generatedObject.Id, generatedObject.Address, generatedObject.PropertyType, generatedObject.BuildYear, 
-            generatedObject.TotalArea, generatedObject.LivingArea, generatedObject.Floor, generatedObject.TotalFloors, 
+            "TotalFloors={TotalFloors}, CadastralNumber='{CadastralNumber}', CadastralValue={CadastralValue}",
+            generatedObject.Id, generatedObject.Address, generatedObject.PropertyType, generatedObject.BuildYear,
+            generatedObject.TotalArea, generatedObject.LivingArea, generatedObject.Floor, generatedObject.TotalFloors,
             generatedObject.CadastralNumber, generatedObject.CadastralValue
-            );
+        );
 
         return generatedObject;
     }

@@ -10,14 +10,16 @@ public class ResidentialBuildingService(
     ResidentialBuildingGenerator generator,
     IDistributedCache cache,
     IConfiguration configuration
-    ) : IResidentialBuildingService
+) : IResidentialBuildingService
 {
     private const string CacheKeyPrefix = "residential-building:";
-    
+
     private const int CacheExpirationTimeMinutesDefault = 15;
-    
-    private readonly TimeSpan _cacheExpirationTimeMinutes = TimeSpan.FromMinutes(configuration.GetValue("CacheSettings:ExpirationTimeMinutes", CacheExpirationTimeMinutesDefault));
-    
+
+    private readonly TimeSpan _cacheExpirationTimeMinutes =
+        TimeSpan.FromMinutes(configuration.GetValue("CacheSettings:ExpirationTimeMinutes",
+            CacheExpirationTimeMinutesDefault));
+
     public async Task<ResidentialBuildingDto> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         var cacheKey = $"{CacheKeyPrefix}{id}";
@@ -29,7 +31,8 @@ public class ResidentialBuildingService(
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "Failed to read from distributed cache for key={cacheKey}. Falling back to generation.", cacheKey);
+            logger.LogWarning(ex,
+                "Failed to read from distributed cache for key={cacheKey}. Falling back to generation.", cacheKey);
         }
 
         if (!string.IsNullOrEmpty(jsonCached))
@@ -45,7 +48,7 @@ public class ResidentialBuildingService(
             {
                 logger.LogWarning(ex, "Invalid JSON in residential building cache for key {cacheKey}.", cacheKey);
             }
-            
+
             if (objCached is null)
             {
                 logger.LogWarning("Cache for residential building with Id={id} returned null.", id);
@@ -56,25 +59,27 @@ public class ResidentialBuildingService(
                 return objCached;
             }
         }
-        
-        var obj = generator.Generate(id);
+
+        ResidentialBuildingDto obj = generator.Generate(id);
 
         try
         {
-            await cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(obj), CreateCacheOptions(), cancellationToken);
+            await cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(obj), CreateCacheOptions(),
+                cancellationToken);
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "Failed to write residential building with Id={id} to cache. Still returning generated value.", id);
+            logger.LogWarning(ex,
+                "Failed to write residential building with Id={id} to cache. Still returning generated value.", id);
         }
-        
+
         logger.LogInformation("Generated and cached residential building with Id={id}", id);
-            
+
         return obj;
     }
 
     /// <summary>
-    /// Создаёт настройки кэша - задаёт время жизни кэша.
+    ///     Создаёт настройки кэша - задаёт время жизни кэша.
     /// </summary>
     private DistributedCacheEntryOptions CreateCacheOptions()
     {
