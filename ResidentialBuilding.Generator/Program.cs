@@ -1,22 +1,8 @@
 using Generator.Generator;
 using Generator.Service;
 using ResidentialBuilding.ServiceDefaults;
-using Serilog;
-using Serilog.Formatting.Compact;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Host.UseSerilog((hostingContext, services, loggerConfiguration) =>
-{
-    loggerConfiguration
-        .MinimumLevel.Information()
-        .ReadFrom.Configuration(hostingContext.Configuration)
-        .ReadFrom.Services(services)
-        .Enrich.FromLogContext()
-        .WriteTo.Console(
-            formatter: new CompactJsonFormatter()
-        );
-});
 
 builder.AddServiceDefaults();
 builder.AddRedisDistributedCache("residential-building-cache");
