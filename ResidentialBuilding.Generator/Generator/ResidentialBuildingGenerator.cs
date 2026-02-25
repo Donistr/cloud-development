@@ -80,13 +80,20 @@ public class ResidentialBuildingGenerator(ILogger<ResidentialBuildingGenerator> 
         generatedObject.Id = id;
         
         logger.LogInformation(
-            "Residential building generated: Id={Id}, Address='{Address}', PropertyType='{PropertyType}', " +
-            "BuildYear={BuildYear}, TotalArea={TotalArea}, LivingArea={LivingArea}, Floor={Floor}, " +
-            "TotalFloors={TotalFloors}, CadastralNumber='{CadastralNumber}', CadastralValue={CadastralValue}",
-            generatedObject.Id, generatedObject.Address, generatedObject.PropertyType, generatedObject.BuildYear,
-            generatedObject.TotalArea, generatedObject.LivingArea, generatedObject.Floor, generatedObject.TotalFloors,
-            generatedObject.CadastralNumber, generatedObject.CadastralValue
-        );
+            "Residential building generated: {@Building}",
+            new
+            {
+                generatedObject.Id,
+                generatedObject.Address,
+                generatedObject.PropertyType,
+                generatedObject.BuildYear,
+                generatedObject.TotalArea,
+                generatedObject.LivingArea,
+                generatedObject.Floor,
+                generatedObject.TotalFloors,
+                generatedObject.CadastralNumber,
+                generatedObject.CadastralValue
+            });
 
         return generatedObject;
     }
