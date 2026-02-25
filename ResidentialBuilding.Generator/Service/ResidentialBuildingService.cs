@@ -61,7 +61,11 @@ public class ResidentialBuildingService(
 
         try
         {
-            await cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(obj), CreateCacheOptions(), cancellationToken);
+            var cacheOptions = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = _cacheExpirationTimeMinutes
+            };
+            await cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(obj), cacheOptions, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -71,16 +75,5 @@ public class ResidentialBuildingService(
         logger.LogInformation("Generated and cached residential building with Id={id}", id);
             
         return obj;
-    }
-
-    /// <summary>
-    /// Создаёт настройки кэша - задаёт время жизни кэша.
-    /// </summary>
-    private DistributedCacheEntryOptions CreateCacheOptions()
-    {
-        return new DistributedCacheEntryOptions
-        {
-            AbsoluteExpirationRelativeToNow = _cacheExpirationTimeMinutes
-        };
     }
 }
