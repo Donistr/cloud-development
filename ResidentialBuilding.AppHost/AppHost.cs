@@ -7,7 +7,7 @@ var generator = builder.AddProject<Projects.ResidentialBuilding_Generator>("gene
     .WithReference(cache, "residential-building-cache")
     .WaitFor(cache);
 
-var client = builder.AddProject<Projects.Client_Wasm>("client")
+builder.AddProject<Projects.Client_Wasm>("client")
     .WithReference(generator)
     .WaitFor(generator);
 
