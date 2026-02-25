@@ -4,7 +4,7 @@ using ResidentialBuilding.ServiceDefaults;
 using Serilog;
 using Serilog.Formatting.Compact;
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((hostingContext, services, loggerConfiguration) =>
 {
@@ -14,7 +14,7 @@ builder.Host.UseSerilog((hostingContext, services, loggerConfiguration) =>
         .ReadFrom.Services(services)
         .Enrich.FromLogContext()
         .WriteTo.Console(
-            new CompactJsonFormatter()
+            formatter: new CompactJsonFormatter()
         );
 });
 
@@ -33,11 +33,11 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddSingleton<ResidentialBuildingGenerator>();
-builder.Services.AddSingleton<IResidentialBuildingService, ResidentialBuildingService>();
+builder.Services.AddSingleton<IResidentialBuildingService,  ResidentialBuildingService>();
 
 builder.Services.AddControllers();
 
-WebApplication app = builder.Build();
+var app = builder.Build();
 
 app.UseCors("AllowLocalDev");
 

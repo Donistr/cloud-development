@@ -4,7 +4,7 @@ using Generator.DTO;
 namespace Generator.Generator;
 
 /// <summary>
-///     Генератор объектов жилого строительства на основе Bogus.
+/// Генератор объектов жилого строительства на основе Bogus
 /// </summary>
 public class ResidentialBuildingGenerator(ILogger<ResidentialBuildingGenerator> logger)
 {
@@ -33,8 +33,8 @@ public class ResidentialBuildingGenerator(ILogger<ResidentialBuildingGenerator> 
         "Апартаменты",
         "Офис"
     ];
-
-    private static readonly Faker<ResidentialBuildingDto>? _faker = new Faker<ResidentialBuildingDto>("ru")
+    
+    private static readonly Faker<ResidentialBuildingDto> _faker = new Faker<ResidentialBuildingDto>("ru")
         .RuleFor(x => x.Address, f => f.Address.FullAddress())
         .RuleFor(x => x.PropertyType, f => f.PickRandom(_propertyTypes))
         .RuleFor(x => x.BuildYear, f => f.Random.Int(MinBuildYear, DateTime.Today.Year))
@@ -68,17 +68,17 @@ public class ResidentialBuildingGenerator(ILogger<ResidentialBuildingGenerator> 
         });
     
     /// <summary>
-    ///     Генерирует объект жилого строительства для заданного идентификатора.
+    /// Генерирует объект жилого строительства для заданного идентификатора
     /// </summary>
-    /// <param name="id">Идентификатор объекта жилого строительства.</param>
-    /// <returns>Сгенерированный объект жилого строительства.</returns>
+    /// <param name="id">Идентификатор объекта жилого строительства</param>
+    /// <returns>Сгенерированный объект жилого строительства</returns>
     public ResidentialBuildingDto Generate(int id)
     {
         logger.LogInformation("Generating Residential Building for Id={id}", id);
 
-        ResidentialBuildingDto? generatedObject = _faker!.Generate();
+        var generatedObject = _faker.Generate();
         generatedObject.Id = id;
-
+        
         logger.LogInformation(
             "Residential building generated: Id={Id}, Address='{Address}', PropertyType='{PropertyType}', " +
             "BuildYear={BuildYear}, TotalArea={TotalArea}, LivingArea={LivingArea}, Floor={Floor}, " +
