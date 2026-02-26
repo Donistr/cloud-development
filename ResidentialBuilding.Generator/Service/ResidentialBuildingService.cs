@@ -1,7 +1,7 @@
-﻿using System.Text.Json;
-using Generator.DTO;
+﻿using Generator.DTO;
 using Generator.Generator;
 using Microsoft.Extensions.Caching.Distributed;
+using System.Text.Json;
 
 namespace Generator.Service;
 
